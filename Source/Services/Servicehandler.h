@@ -24,14 +24,3 @@ namespace Service
     void Eventhandler(struct mg_connection *Connection, int EventID, void *Eventdata);
     void Register(IService *Service);
 }
-
-// Forward declaration of a service.
-#define Declareservice(Name)                                                        \
-struct Service_ ##Name : public IService                                            \
-{                                                                                   \
-    virtual std::string Servicename() { return #Name; };                            \
-    virtual bool Handlerequest(mg_connection *Connection, http_message *Request);   \
-}                                                                                   \
-
-// List of services we support in this version.
-/* TODO */

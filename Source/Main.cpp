@@ -29,11 +29,6 @@ int main(int argc, char **argv)
         signal(SIGINT, Signalhandler);
     }
 
-    // Register the services we'll handle.
-    {
-        /* TODO */
-    }
-
     // Start the server.
     {
         mg_mgr Manager;

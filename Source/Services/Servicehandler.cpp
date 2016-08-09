@@ -3,6 +3,7 @@
     License: GPL 2.0
     Started: 2016-7-18
     Notes:
+        This is basically a glorified callback routing the requests.
 */
 
 #include "Servicehandler.h"
