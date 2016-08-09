@@ -144,11 +144,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Services\Authentication\Clientauthentication.cpp" />
     <ClCompile Include="Source\Services\Servicehandler.cpp" />
     <ClCompile Include="Source\Utilities\Files\Filesystem.cpp" />
     <ClCompile Include="Source\Utilities\Strings\Debugstring.cpp" />
     <ClCompile Include="Source\Utilities\Strings\Variadicstring.cpp" />
     <ClCompile Include="Thirdparty\mongoose.cpp" />
+    <ClCompile Include="Thirdparty\sm3.c" />
+    <ClCompile Include="Thirdparty\sm3_cl.cpp" />
+    <ClCompile Include="Thirdparty\sm4.c" />
+    <ClCompile Include="Thirdparty\sm4_cl.cpp" />
     <ClCompile Include="Thirdparty\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +168,10 @@
     <ClInclude Include="Source\Utilities\Strings\Variadicstring.h" />
     <ClInclude Include="Thirdparty\json.hpp" />
     <ClInclude Include="Thirdparty\mongoose.h" />
+    <ClInclude Include="Thirdparty\sm3.h" />
+    <ClInclude Include="Thirdparty\sm3_cl.hpp" />
+    <ClInclude Include="Thirdparty\sm4.h" />
+    <ClInclude Include="Thirdparty\sm4_cl.hpp" />
     <ClInclude Include="Thirdparty\sqlite3.h" />
   </ItemGroup>
   <ItemGroup>

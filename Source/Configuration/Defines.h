@@ -53,3 +53,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _SCL_SECURE_NO_WARNINGS
 #endif
+
+// Internal crypto settings.
+#define ENCRYPTION_SEED "Remember to set /DENCRYPTION_SEED before compiling"
