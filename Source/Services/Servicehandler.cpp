@@ -11,7 +11,7 @@
 #include <json.hpp>
 
 // Internal map over the services.
-std::unordered_map<std::string, IService *> Servicemap;
+std::unordered_map<std::string, IService *> *Servicemap;
 
 void Service::Eventhandler(mg_connection *Connection, int EventID, void *Eventdata)
 {
@@ -53,8 +53,8 @@ void Service::Eventhandler(mg_connection *Connection, int EventID, void *Eventda
             std::string URI(Message->uri.p, Message->uri.len);
 
             // Find the service in our list and call it.
-            auto Service = Servicemap.find(URI);
-            if (Service == Servicemap.end() || !Service->second->Handlerequest(Connection, Message))
+            auto Service = Servicemap->find(URI);
+            if (Service == Servicemap->end() || !Service->second->Handlerequest(Connection, Message))
             {
                 nlohmann::json Response;
                 Response["result"] = 500;
@@ -71,5 +71,8 @@ void Service::Eventhandler(mg_connection *Connection, int EventID, void *Eventda
 }
 void Service::Register(IService *Service)
 {
-    Servicemap.emplace(Service->Servicename(), Service);
+    if (!Servicemap)
+        Servicemap = new std::unordered_map<std::string, IService *>();
+
+    Servicemap->emplace(Service->Servicename(), Service);
 }
