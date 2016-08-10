@@ -123,9 +123,16 @@ struct Clientauthentication : public IService
     virtual std::string Servicename() { return "/Clientauthentication"; };
     virtual bool Handlerequest(mg_connection *Connection, http_message *Request)
     {
+        char Email[256]{};
+        char Encodedpassword[255]{};
+
+        // Get the variables.
+        mg_get_http_var(&Request->query_string, "email", Email, sizeof(Email));
+        mg_get_http_var(&Request->query_string, "password", Encodedpassword, sizeof(Encodedpassword));
+
         /*
             TODO(Convery):
-            Authenticate against the forum.
+            Get a copy of the forum database, verify the credentials.
         */
         return false;
     }
