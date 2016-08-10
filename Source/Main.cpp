@@ -39,6 +39,11 @@ int main(int argc, char **argv)
 
         // Bind the manager to the standard HTTP port.
         Connection = mg_bind(&Manager, "80", Service::Eventhandler);
+        if (!Connection)
+        {
+            DebugPrint("Could not bind to port 80.");
+            return 0;
+        }
 
         // Change the protocol to enable websockets.
         mg_set_protocol_http_websocket(Connection);

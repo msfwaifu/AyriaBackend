@@ -120,7 +120,7 @@ struct Clientticket : public Authenticationticket
 
 struct Clientauthentication : public IService
 {
-    virtual std::string Servicename() { return "Clientauthentication"; };
+    virtual std::string Servicename() { return "/Clientauthentication"; };
     virtual bool Handlerequest(mg_connection *Connection, http_message *Request)
     {
         /*
