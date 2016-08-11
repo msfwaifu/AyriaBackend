@@ -16,13 +16,17 @@ struct Ayriaclient
     mg_connection *Socket;
 
     virtual void onDisconnect();    
-    virtual void onMessage(std::string Message);
+    virtual void onMessage(std::string &Message);
     virtual void onConnect(mg_connection *Socket);
     virtual void Sendmessage(std::string &Message);
 };
 
 namespace Clientconnection
 {
-    // Callback for mongoose.
-    void Eventhandler(struct mg_connection *Connection, int EventID, void *Eventdata);
+    // Callbacks for mongoose, let the compiler separate them into subroutines.
+    void Eventhandler1(struct mg_connection *Connection, int EventID, void *Eventdata);
+    void Eventhandler2(struct mg_connection *Connection, int EventID, void *Eventdata);
+    void Eventhandler3(struct mg_connection *Connection, int EventID, void *Eventdata);
+    void Eventhandler4(struct mg_connection *Connection, int EventID, void *Eventdata);
+    void Eventhandler5(struct mg_connection *Connection, int EventID, void *Eventdata);
 }

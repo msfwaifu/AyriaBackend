@@ -8,6 +8,6 @@
 #include "Clientmanager.h"
 
 void Ayriaclient::onDisconnect() {};
-void Ayriaclient::onMessage(std::string Message) {};
+void Ayriaclient::onMessage(std::string &Message) {};
 void Ayriaclient::onConnect(mg_connection *Socket) {};
 void Ayriaclient::Sendmessage(std::string &Message) {};
