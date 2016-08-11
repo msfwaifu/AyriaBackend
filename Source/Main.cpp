@@ -7,7 +7,7 @@
 */
 
 #include <Configuration\All.h>
-#include <Services\Servicehandler.h>
+#include <Clients\Clientmanager.h>
 #include <mongoose.h>
 
 // Shutdown signal is sent.
@@ -37,16 +37,19 @@ int main(int argc, char **argv)
         // Initialize the manager without any userdata.
         mg_mgr_init(&Manager, NULL);
 
-        // Bind the manager to the standard HTTP port.
-        Connection = mg_bind(&Manager, "80", Service::Eventhandler);
-        if (!Connection)
+        // Open 10 ports for the client handler.
+        for (uint32_t i = 28000; i < 28010; ++i)
         {
-            DebugPrint("Could not bind to port 80.");
-            return 0;
+            Connection = mg_bind(&Manager, va_small("%i", i), Clientconnection::Eventhandler);
+            if(Connection) mg_set_protocol_http_websocket(Connection);
         }
 
-        // Change the protocol to enable websockets.
-        mg_set_protocol_http_websocket(Connection);
+        // Open 10 ports for the server handler.
+        for (uint32_t i = 28000; i < 28010; ++i)
+        {
+            // Connection = mg_bind(&Manager, va_small("%i", i), Serverconnection::Eventhandler);
+            // if(Connection) mg_set_protocol_http_websocket(Connection);
+        }
 
         // Loop until we should quit.
         while (Signalreceived == 0)

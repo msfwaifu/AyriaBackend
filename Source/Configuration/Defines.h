@@ -54,5 +54,6 @@
 #define _SCL_SECURE_NO_WARNINGS
 #endif
 
-// Internal crypto settings.
+// Internal communication settings.
 #define ENCRYPTION_SEED "Remember to set /DENCRYPTION_SEED before compiling"
+#define DB_TOKEN "Remember to set /DDB_TOKEN before compiling"

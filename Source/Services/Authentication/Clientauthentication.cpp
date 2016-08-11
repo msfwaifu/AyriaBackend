@@ -121,20 +121,9 @@ struct Clientticket : public Authenticationticket
 struct Clientauthentication : public IService
 {
     virtual std::string Servicename() { return "/Clientauthentication"; };
-    virtual bool Handlerequest(mg_connection *Connection, http_message *Request)
+    virtual std::string Handlerequest(std::string &JSONString)
     {
-        char Email[256]{};
-        char Encodedpassword[255]{};
-
-        // Get the variables.
-        mg_get_http_var(&Request->query_string, "email", Email, sizeof(Email));
-        mg_get_http_var(&Request->query_string, "password", Encodedpassword, sizeof(Encodedpassword));
-
-        /*
-            TODO(Convery):
-            Get a copy of the forum database, verify the credentials.
-        */
-        return false;
+        return "{ None }";
     }
     Clientauthentication() 
     { 

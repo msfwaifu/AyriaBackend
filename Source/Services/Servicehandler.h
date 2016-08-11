@@ -15,12 +15,15 @@ struct IService
     virtual std::string Servicename() = 0;
 
     // Handle the request as needed, returns true if the request was handled.
-    virtual bool Handlerequest(mg_connection *Connection, http_message *Request) = 0;
+    virtual std::string Handlerequest(std::string &JSONString) = 0;
 };
 
 namespace Service
 {
-    // Parse the request and send it to a handler, or register a new service.
-    void Eventhandler(struct mg_connection *Connection, int EventID, void *Eventdata);
+    // Send the request to a service based on URL or servicename.
+    std::string Handlemessage(std::string &URI, std::string &Params, std::string &Postdata);
+    std::string Handlemessage(std::string &JSONString);
+
+    // Register a service to be used in the handler.
     void Register(IService *Service);
 }

@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Clients\Ayriaclient.cpp" />
+    <ClCompile Include="Source\Clients\Clientmanager.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Services\Authentication\Clientauthentication.cpp" />
     <ClCompile Include="Source\Services\Servicehandler.cpp" />
@@ -157,6 +159,7 @@
     <ClCompile Include="Thirdparty\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Clients\Clientmanager.h" />
     <ClInclude Include="Source\Configuration\All.h" />
     <ClInclude Include="Source\Configuration\Defines.h" />
     <ClInclude Include="Source\Configuration\Macros.h" />
