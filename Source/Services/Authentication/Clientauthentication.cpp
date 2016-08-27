@@ -3,123 +3,102 @@
     License: GPL 2.0
     Started: 2016-8-9
     Notes:
-        Users are authenticated against the PHPBB forum.
+        Users are authenticated against a local SQLite DB.
 */
 
 #include <Configuration\All.h>
 #include <Services\Servicehandler.h>
-#include <json.hpp>
-#include <base64.h>
+#include <unordered_map>
 #include <sm4_cl.hpp>
 #include <sm3_cl.hpp>
+#include <json.hpp>
+#include <base64.h>
+#include <mutex>
 
-// Encryptionkey for internal hashing.
-uint8_t Encryptionkey[32]{};
+// Encryptionkey that should be unique for this session.
+uint8_t Encryptionkey[32];
 
-// Authentication ticket to prove an identity.
-struct Authenticationticket
+// Encrypted ticket data for the host to verify.
+struct Verificationticket
 {
-    bool Valid;
+    uint32_t Token;             // Proof of sucessful decryption.
     uint32_t ForumID;           // Needs to be cast by the module using it.
-    uint32_t APIToken;          // Token combined with address to prove identity.
-    uint32_t Tickettype;        // Client, Host, and any other.
     uint32_t Expiration;        // UNIX timestamp of expiration.
-    uint32_t IPv4Address;       // Token combined with address to prove identity.
+    uint32_t IPv4Address;       // To prevent MITM problems.
     std::string Username;       // The name visible on the forum.
-
-    virtual void toStringPublic(std::string &Output) = 0;
-    virtual void toStringPrivate(std::string &Output) = 0;
-    virtual void toStringFullticket(std::string &Output) = 0;
-    virtual void Verify(std::string *Input) = 0;
-};
-struct Clientticket : public Authenticationticket
-{
-    std::string FTPServer;      // A user provided storage location for avatars.
-
-    virtual void toStringPublic(std::string &Output)
+    
+    bool Decrypt(std::string *Encryptedticket)
     {
-        nlohmann::json Response;
-
-        // Serialize the public info.
-        Response["ForumID"] = ForumID;
-        Response["APIToken"] = APIToken;
-        Response["Username"] = Username;
-        Response["FTPServer"] = FTPServer;
-
-        Output = Response.dump(1);
-    }
-    virtual void toStringPrivate(std::string &Output)
-    {
-        nlohmann::json Response;
-        Tickettype = 1;
-
-        // Serialize the private info.
-        Response["ForumID"] = ForumID;
-        Response["APIToken"] = APIToken;
-        Response["Tickettype"] = Tickettype;
-        Response["Expiration"] = Expiration;
-        Response["IPV4Address"] = IPv4Address;
-
-        Output = Response.dump(1);
-    }
-    virtual void toStringFullticket(std::string &Output)
-    {
-        nlohmann::json Response;
-        std::string Publicinfo;
-        std::string Privateinfo;
-
-        // Create public and private strings.
-        toStringPrivate(Privateinfo);
-        toStringPublic(Publicinfo);
-
-        // Encrypt the private info.
-        auto Encryptedprivate = std::make_unique<uint8_t[]>(Privateinfo.size());
-        SM4 Encrypter(Encryptionkey);
-        Encrypter.encrypt(Encryptedprivate.get(), (const uint8_t *)Privateinfo.data(), Privateinfo.size());
-
-        // Encode the private data.
-        auto Encodedstring = std::make_unique<char[]>(Privateinfo.size() * 3 + 1);
-        Base64::Encode((char *)Encryptedprivate.get(), Privateinfo.size(), Encodedstring.get(), Privateinfo.size() * 3 + 1);
-
-        // Serialize the ticket.
-        Response["Public"] = Publicinfo;
-        Response["Private"] = Encodedstring.get();
-
-        Output = Response.dump(1);
-    }
-    virtual void Verify(std::string *Input)
-    {
-        // Initial request format.
-        nlohmann::json Rawrequest;
-        Rawrequest.parse(*Input);
-        std::string Privateinfo;
-        Privateinfo = Rawrequest["Private"].get<std::string>();
-
-        // Decode the private info.
-        std::string Decodedprivateinfo;
-        Base64::Decode(Privateinfo, &Decodedprivateinfo);
-
-        // Decrypt the private info.
-        auto Plainprivateinfo = std::make_unique<uint8_t[]>(Decodedprivateinfo.size());
+        // Decrypt the string into a buffer.
         SM4 Decrypter(Encryptionkey);
-        Decrypter.decrypt(Plainprivateinfo.get(), (const uint8_t *)Decodedprivateinfo.data(), Decodedprivateinfo.size());
-
-        // Deserialize private info.
-        nlohmann::json Plainrequest;
-        Plainrequest.parse((char *)Plainprivateinfo.get());
-        ForumID = Plainrequest["ForumID"];
-        APIToken = Plainrequest["APIToken"];
-        Tickettype = Plainrequest["Tickettype"];
-        Expiration = Plainrequest["Expiration"];
-        IPv4Address = Plainrequest["IPv4Address"];
-
-        // Verify the tickets timestamp.
-        Valid = std::time(NULL) < Expiration;
+        auto Decryptedbuffer = std::make_unique<uint8_t []>(Encryptedticket->size());
+        Decrypter.decrypt(Decryptedbuffer.get(), (const uint8_t *)Encryptedticket->data(), Encryptedticket->size());
+        
+        // Deserialize the JSON string.
+        nlphmann::json JSONTicket;
+        try
+        {
+            Token = 0;  // Invalidate.
+            JSONTicket.parse((char *)Decryptedbuffer.get());
+            
+            Token = JSONTicket["Token"];
+            ForumID = JSONTicket["ForumID"];
+            Expiration = JSONTicket["Expiration"];
+            IPv4Address = JSONTicket["IPv4Address"];
+        }
+        catch(...) {}
+        
+        return Token == *(uint32_t *)Encryptionkey;        
+    }
+    void Encrypt(std::string *Encryptedticket)
+    {
+        // Serialize the ticket data.
+        nlphmann::json JSONTicket;
+        Token = *(uint32_t *)Encryptionkey;
+        
+        JSONTicket["Token"] = Token;
+        JSONTicket["ForumID"] = ForumID;
+        JSONTicket["Expiration"] = Expiration;
+        JSONTicket["IPv4Address"] = IPv4Address;
+        
+        // Encrypt the JSON string.
+        SM4 Encrypter(Encryptionkey);
+        size_t Encryptedsize = JSONTicket.dump(1).size();
+        auto Encryptedbuffer = std::make_unique<uint8_t []>(Encryptedsize);
+        Encrypter.encrypt(Encryptedbuffer.get(), (const uint8_t *)JSONTicket.dump(1).c_str(), Encryptedsize);
+        
+        Encryptedticket->append((const char *)Encryptedbuffer.get(), Encryptedsize);
     }
 };
 
+/*
+    TODO(Convery):
+    Move this very basic structure to it's own file
+    and expend on it as needed.
+*/
+struct Backendclient
+{
+    uint32_t ForumID;
+    Verificationticket Activeticket;
+};
+
+// Tasks handled by the service.
 struct Clientauthentication : public IService
 {
+    // Clientmap.
+    std::unordered_map<uint64_t /* ForumID */, std::unique_ptr<Backendclient>> Activeclients;
+    
+    // Service tasks.
+    bool Clientheartbeat(Verificationticket *Ticket)
+    {
+        if(Ticket->Expiration < uint32_t(time(NULL)))
+            return false;
+        
+        Ticket->Expiration = uint32_t(time(NULL)) + 300000;
+        return true;
+    }
+
+    // Base service.
     virtual std::string Servicename() { return "/Clientauthentication"; };
     virtual std::string Handlerequest(std::string &JSONString)
     {
