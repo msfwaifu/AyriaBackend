@@ -15,10 +15,10 @@ struct Ayriaclient
 {
     mg_connection *Socket;
 
-    virtual void onDisconnect();    
-    virtual void onMessage(std::string &Message);
+    virtual void onDisconnect();
     virtual void onConnect(mg_connection *Socket);
     virtual void Sendmessage(std::string &Message);
+    virtual std::string onMessage(std::string &Message);
 };
 
 namespace Clientconnection
