@@ -35,7 +35,7 @@ struct Verificationticket
         Decrypter.decrypt(Decryptedbuffer.get(), (const uint8_t *)Encryptedticket->data(), Encryptedticket->size());
         
         // Deserialize the JSON string.
-        nlphmann::json JSONTicket;
+        nlohmann::json JSONTicket;
         try
         {
             Token = 0;  // Invalidate.
@@ -53,7 +53,7 @@ struct Verificationticket
     void Encrypt(std::string *Encryptedticket)
     {
         // Serialize the ticket data.
-        nlphmann::json JSONTicket;
+        nlohmann::json JSONTicket;
         Token = *(uint32_t *)Encryptionkey;
         
         JSONTicket["Token"] = Token;
