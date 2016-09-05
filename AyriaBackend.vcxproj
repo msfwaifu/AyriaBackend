@@ -143,11 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Clients\Ayriaclient.cpp" />
-    <ClCompile Include="Source\Clients\Clientmanager.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Services\Authentication\Clientauthentication.cpp" />
-    <ClCompile Include="Source\Services\Servicehandler.cpp" />
     <ClCompile Include="Source\Utilities\Files\Filesystem.cpp" />
     <ClCompile Include="Source\Utilities\Strings\Debugstring.cpp" />
     <ClCompile Include="Source\Utilities\Strings\Variadicstring.cpp" />
@@ -159,12 +155,10 @@
     <ClCompile Include="Thirdparty\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Clients\Clientmanager.h" />
     <ClInclude Include="Source\Configuration\All.h" />
     <ClInclude Include="Source\Configuration\Defines.h" />
     <ClInclude Include="Source\Configuration\Macros.h" />
     <ClInclude Include="Source\Configuration\Warnings.h" />
-    <ClInclude Include="Source\Services\Servicehandler.h" />
     <ClInclude Include="Source\Utilities\All.h" />
     <ClInclude Include="Source\Utilities\Files\Filesystem.h" />
     <ClInclude Include="Source\Utilities\Strings\Debugstring.h" />
