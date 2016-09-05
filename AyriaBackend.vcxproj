@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Connection\Clienthandler.cpp" />
+    <ClCompile Include="Source\Connection\Clientimplementations\Ayriaclient.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Utilities\Files\Filesystem.cpp" />
     <ClCompile Include="Source\Utilities\Strings\Debugstring.cpp" />
@@ -159,6 +161,8 @@
     <ClInclude Include="Source\Configuration\Defines.h" />
     <ClInclude Include="Source\Configuration\Macros.h" />
     <ClInclude Include="Source\Configuration\Warnings.h" />
+    <ClInclude Include="Source\Connection\Clienthandler.h" />
+    <ClInclude Include="Source\Connection\Clientimplementations\Ayriaclient.h" />
     <ClInclude Include="Source\Utilities\All.h" />
     <ClInclude Include="Source\Utilities\Files\Filesystem.h" />
     <ClInclude Include="Source\Utilities\Strings\Debugstring.h" />
