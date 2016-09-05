@@ -81,7 +81,7 @@ void Clienthandler::Connectioncleanup()
 
 	while (true)
 	{
-		std::this_thread::sleep_for(std::chrono::seconds(30));
+		std::this_thread::sleep_for(std::chrono::seconds(5));
 		Timestamp = GetTickCount64();
 
 		Lingeringconnections.first.lock();
@@ -115,23 +115,23 @@ Clienthandler::Clienthandler()
 }
 
 // Wrappers for the eventhandler.
-void Clienthandler::onEvent1(mg_connection *Connection, size_t EventID, void *Eventdata)
+void Clienthandler::onEvent1(mg_connection *Connection, int EventID, void *Eventdata)
 {
 	onInternalevent(Connection, EventID, Eventdata, 0);
 }
-void Clienthandler::onEvent2(mg_connection *Connection, size_t EventID, void *Eventdata)
+void Clienthandler::onEvent2(mg_connection *Connection, int EventID, void *Eventdata)
 {
 	onInternalevent(Connection, EventID, Eventdata, 1);
 }
-void Clienthandler::onEvent3(mg_connection *Connection, size_t EventID, void *Eventdata)
+void Clienthandler::onEvent3(mg_connection *Connection, int EventID, void *Eventdata)
 {
 	onInternalevent(Connection, EventID, Eventdata, 2);
 }
-void Clienthandler::onEvent4(mg_connection *Connection, size_t EventID, void *Eventdata)
+void Clienthandler::onEvent4(mg_connection *Connection, int EventID, void *Eventdata)
 {
 	onInternalevent(Connection, EventID, Eventdata, 3);
 }
-void Clienthandler::onEvent5(mg_connection *Connection, size_t EventID, void *Eventdata)
+void Clienthandler::onEvent5(mg_connection *Connection, int EventID, void *Eventdata)
 {
 	onInternalevent(Connection, EventID, Eventdata, 4);
 }

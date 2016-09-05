@@ -24,11 +24,11 @@ public:
 	static std::atomic<uint64_t> Clientcount;
 	static void Connectioncleanup();
 
-	static void onEvent1(mg_connection *Connection, size_t EventID, void *Eventdata);
-	static void onEvent2(mg_connection *Connection, size_t EventID, void *Eventdata);
-	static void onEvent3(mg_connection *Connection, size_t EventID, void *Eventdata);
-	static void onEvent4(mg_connection *Connection, size_t EventID, void *Eventdata);
-	static void onEvent5(mg_connection *Connection, size_t EventID, void *Eventdata);
+	static void onEvent1(mg_connection *Connection, int EventID, void *Eventdata);
+	static void onEvent2(mg_connection *Connection, int EventID, void *Eventdata);
+	static void onEvent3(mg_connection *Connection, int EventID, void *Eventdata);
+	static void onEvent4(mg_connection *Connection, int EventID, void *Eventdata);
+	static void onEvent5(mg_connection *Connection, int EventID, void *Eventdata);
 
 	Clienthandler();
 };

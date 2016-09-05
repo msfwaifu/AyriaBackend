@@ -7,6 +7,7 @@
 */
 
 #include <Configuration\All.h>
+#include <Connection\Clienthandler.h>
 #include <mongoose.h>
 
 // Shutdown signal is sent.
@@ -35,6 +36,13 @@ int main(int argc, char **argv)
 
         // Initialize the manager without any userdata.
         mg_mgr_init(&Manager, NULL);
+
+		// Open 5 ports for the client handler.
+		Connection = mg_bind(&Manager, "28001", Clienthandler::onEvent1);  if(Connection) mg_set_protocol_http_websocket(Connection);
+		Connection = mg_bind(&Manager, "28002", Clienthandler::onEvent2);  if(Connection) mg_set_protocol_http_websocket(Connection);
+		Connection = mg_bind(&Manager, "28003", Clienthandler::onEvent3);  if(Connection) mg_set_protocol_http_websocket(Connection);
+		Connection = mg_bind(&Manager, "28004", Clienthandler::onEvent4);  if(Connection) mg_set_protocol_http_websocket(Connection);
+		Connection = mg_bind(&Manager, "28005", Clienthandler::onEvent5);  if(Connection) mg_set_protocol_http_websocket(Connection);
 
         // Loop until we should quit.
         while (Signalreceived == 0)
