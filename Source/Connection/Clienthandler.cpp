@@ -18,6 +18,10 @@ std::vector<std::pair<std::mutex, std::unordered_map<size_t, Ayriaclient *>>*> C
 // Each of the wrappers call this with a different index.
 void Clienthandler::onInternalevent(mg_connection *Connection, size_t EventID, void *Eventdata, size_t Index)
 {
+	// Ignore polls before anything.
+	if (EventID == MG_EV_POLL)
+		return;
+
 	// Incoming messages get prioritized.
 	if (EventID == MG_EV_WEBSOCKET_FRAME)
 	{
@@ -69,9 +73,6 @@ void Clienthandler::onInternalevent(mg_connection *Connection, size_t EventID, v
 		}
 		return;
 	}
-
-	// We don't want other messages.
-	mg_close_conn(Connection);
 }
 
 // Cleanup thread for lingering connections.
